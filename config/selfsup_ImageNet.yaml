@@ -1,0 +1,59 @@
+base: 
+  name: selfsup_ImageNet
+  DEVICE: cuda:0
+  seed: 0
+  params: 
+    clip_len: 21
+    dropout: 0.2
+  data_root: ../data/MovieNet
+  save_root: ../checkpoints
+  path: 
+    feature_path:
+      - ${base.data_root}/ImageNet_shot.pkl
+    split_path: ${..data_root}/movie1K.split.v1.json
+    scene_path: ${..data_root}/scene_annotation.pkl
+    shot_path: ${..data_root}/shot_annotation.pkl
+    label_path: ${..data_root}/label_dict.pkl
+  model: model
+
+pretrain: 
+  params: 
+    num_workers: 12
+    batch_size: 256
+    lr: 1
+    from_epoch: 0
+    total_epochs: 11
+  train: 
+    dataset: pretrain_base
+    vid_list: other_vids
+  test: 
+    dataset: finetune_base
+    vid_list: test_vids
+  optim: SGD
+
+finetune:
+  params: 
+    num_workers: 12
+    batch_size: 256
+    lr: 1e-5
+    from_epoch: 0
+    total_epochs: 11
+    label_percentage: 100
+  load_path: ${base.save_root}/${base.name}/pretrain/epoch=10.pt
+  train: 
+    dataset: finetune_base
+    vid_list: train_vids
+  test: 
+    dataset: finetune_base
+    vid_list: test_vids
+  optim: Adam
+
+evaluate: 
+  params: 
+    num_workers: 12
+    batch_size: 1024
+  load_path: ${base.save_root}/${base.name}/finetune/epoch=10.pt
+  test: 
+    dataset: finetune_base
+    vid_list: test_vids
+  head: sbd

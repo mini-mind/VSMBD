@@ -1,0 +1,11 @@
+DEVICE: cuda:1
+batch_size: 64
+num_workers: 8
+model: Places365
+data_root: /root/project/data/MovieNet
+load_path: /data/yangpingan/checkpoints/resnet50_places365.pth.tar
+load_key: state_dict
+save_path: ${data_root}/Places_shot.h5
+keyframes_root: ${data_root}/keyframes_from_240P
+split_path: ${data_root}/movie1K.split.v1.json
+dataset: places365

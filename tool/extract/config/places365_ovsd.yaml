@@ -1,0 +1,10 @@
+DEVICE: cuda:1
+batch_size: 64
+num_workers: 8
+model: Places365
+data_root: /root/project/data/OVSD
+load_path: /data/yangpingan/checkpoints/resnet50_places365.pth.tar
+load_key: state_dict
+save_path: ${data_root}/Places365_OVSD_shot.h5
+keyframes_root: ${data_root}/keyframes_from_240P
+dataset: places365

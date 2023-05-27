@@ -1,0 +1,8 @@
+DEVICE: cuda:0
+batch_size: 64
+num_workers: 8
+model: ImageNet
+data_root: /root/project/data/OVSD/formated
+save_path: ${data_root}/feature/ImageNet_OVSD_shot.h5
+keyframes_root: ${data_root}/keyframes_from_240P
+dataset: imagenet
