@@ -50,19 +50,32 @@
 # # pre-train with o% overlap
 # ########################################################################
 
-# for o in 10
-for o in 5 20 1 10
-do
-    python -m src.pretrain config/gap.yaml \
-        base.name=overlap${o} \
-        pretrain.params.overlap=${o}
-    python -m src.finetune config/gap.yaml \
-        base.name=overlap${o} \
-        pretrain.params.overlap=${o} \
-        finetne.load_path='${base.save_root}/overlap'${o}'/pretrain/epoch=10.pt'
-done
+# for o in 10 20 5 1 0
+# do
+#     python -m src.pretrain config/gap.yaml \
+#         base.name=overlap${o} \
+#         pretrain.params.overlap=${o}
+#     python -m src.finetune config/gap.yaml \
+#         base.name=overlap${o} \
+#         pretrain.params.overlap=${o} \
+#         finetne.load_path='${base.save_root}/overlap'${o}'/pretrain/epoch=10.pt'
+# done
 
+# ########################################################################
+# # filter false negtive pseudo boundaries
+# ########################################################################
 
-echo 'shutdown after 60 seconds.'
-sleep 60
-shutdown
+# # save prediction
+# python -m src.predict config/selfsup_best.yaml \
+#     evaluate.test.vid_list=other_vids \
+#     evaluate.test.dataset=predict
+
+python -m src.pretrain config/filter_pseudo.yaml
+python -m src.finetune config/filter_pseudo.yaml
+find ../checkpoints/ -name 'epoch*' | grep -v 'epoch=10' | xargs rm
+
+###############################
+
+# echo 'shutdown after 60 seconds.'
+# sleep 60
+# shutdown

@@ -37,6 +37,8 @@ def load_config(stage, cfg=cfg):
         data.scene_dict = {vid:np.cumsum(label) for vid,label in data.label_dict.items()}
     if OC.select(cfg, 'base.path.pseudo_path'):
         data.pseudo_dict = pd.read_pickle(cfg.base.path.pseudo_path)
+    if OC.select(cfg, 'base.path.filter_path'):
+        data.filter_dict = pd.read_pickle(cfg.base.path.filter_path)
     if OC.select(cfg, 'base.path.info_path'):
         with open(cfg.base.path.info_path) as f:
             data.info_dict = json.load(f)

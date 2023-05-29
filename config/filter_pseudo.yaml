@@ -1,16 +1,17 @@
 base: 
-  name: gap
+  name: filter_pseudo
   DEVICE: cuda:0
   seed: 0
   params: 
     clip_len: 21
     dropout: 0.2
   data_root: ../data/MovieNet
-  save_root: ../checkpoints/overlap
+  save_root: ../checkpoints/filter
   path: 
     feature_path:
       - ${base.data_root}/ImageNet_shot.pkl
       - ${base.data_root}/Places_shot.pkl
+    filter_path: /root/project/checkpoints/selfsup_best/evaluate/selfsup_best.pkl
     split_path: ${..data_root}/movie1K.split.v1.json
     scene_path: ${..data_root}/scene_annotation.pkl
     shot_path: ${..data_root}/shot_annotation.pkl
@@ -24,10 +25,8 @@ pretrain:
     lr: 1
     from_epoch: 0
     total_epochs: 11
-    gap: 0
-    overlap: 0
   train: 
-    dataset: pretrain_gap
+    dataset: filter_pseudo
     vid_list: other_vids
   test: 
     dataset: finetune_base
@@ -41,7 +40,6 @@ finetune:
     lr: 1e-5
     from_epoch: 0
     total_epochs: 11
-    label_percentage: 100
   load_path: ${base.save_root}/${base.name}/pretrain/epoch=10.pt
   train: 
     dataset: finetune_base

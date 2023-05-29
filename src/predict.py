@@ -7,11 +7,11 @@ from .common.logger import log
 from .runtime import *
 from omegaconf import OmegaConf as OC
 import pandas as pd
+from torch.nn import functional as F
 
 
-metrics = Metrics(data.vno_shot_bound)
-# evaluate the performance of the specified model on the specified dataset
-val_loss_log = []
+results = {}
+
 if not os.path.exists(cfg.evaluate.load_path):
     print('No checkpoint:', cfg.evaluate.load_path)
 else:
@@ -26,28 +26,24 @@ else:
     with torch.no_grad():
         for i,payload in enumerate(tqdm(val_loader, 'Evaluating')):
             out = predict(payload)
-            loss = out['loss']
             logits = out['logits']
-            val_loss_log.append(loss.item())
             # update metric
             vnos = payload["vno"]
             sids = payload["center_shid"]
-            labels = payload['center_label']
-            metrics.update(vnos, sids, logits, labels)
+            # metrics.update(vnos, sids, logits, labels)
+            logits = F.softmax(logits.cpu(), dim=1)[:, 1]
 
-        score = metrics.compute()
-        score.update({
-            'val_loss': np.mean(val_loss_log),
-        })
-        results = {
-            'probs':metrics.probs,
-            'gts':metrics.gts,
-            'vids':[data.vno2vid[vno.item()] for vno in metrics.vnos],
-            'shids':metrics.sids
-        }
-        metrics.reset()
-        log()
-        for k,v in score.items():
-            log(k, ':', v)
-        file_name = f'{os.path.basename(cfg.evaluate.load_path).split(".")[0]}.pkl'
-        # pd.to_pickle(results, os.path.join(cfg.base.save_root, cfg.base.name, file_name))
+            for vno, sid, logit in zip(vnos, sids, logits):
+                vid = data.vno2vid[vno.item()]
+                sid = sid.item()
+                logit = logit.item()
+                vid_data = results.get(vid, None)
+                if vid_data is None:
+                    results[vid] = {}
+                sid_data = results[vid].get(sid, None)
+                if sid_data is None:
+                    results[vid][sid] = logit
+
+            # print(vid, sid, logit)
+
+        pd.to_pickle(results, os.path.join(cfg.base.save_root, cfg.base.name, 'evaluate', cfg.base.name+'.pkl'))
