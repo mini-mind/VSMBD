@@ -16,6 +16,7 @@ from .base_dataset import BaseDataset
 class Dataset(BaseDataset):
     def __init__(self, vid_list):
         super().__init__(vid_list)
+        print(float(cfg.pretrain.params.get('overlap', 0)))
                 
     def __getitem__(self, idx):
 
@@ -40,7 +41,25 @@ class Dataset(BaseDataset):
         payload['neg_idx'] = neg_idx
 
         # payload(['video'])
-        rand_shid = np.random.randint(data.shot_num[vid]-self.clip_len)
+        overlap = float(cfg.pretrain.params.get('overlap', 0))
+        if np.random.rand() < overlap/100:
+            left_border=begin_shid-(self.clip_len-pseudo_bound)+1
+            right_border=begin_shid+pseudo_bound-1
+            left_border = max(left_border, 0)
+            right_border = min(right_border, data.shot_num[vid]-(self.clip_len-pseudo_bound))
+
+            # if(right_border-left_border<=0):
+            #     print(left_border,right_border,':',begin_shid-(self.clip_len-pseudo_bound)+1,begin_shid+pseudo_bound-1)
+            #     print(data.shot_num[vid], self.clip_len-pseudo_bound)
+            #     print(begin_shid)
+
+            rand_shid = np.random.randint(right_border-left_border+1)+left_border
+        else:
+            gap = cfg.pretrain.params.get('gap', 0)
+            rand_shid = np.random.randint(data.shot_num[vid]-2*(gap+self.clip_len))
+            if rand_shid >= begin_shid-gap-(self.clip_len-pseudo_bound):
+                rand_shid += 2*gap+self.clip_len
+        # rand_shid = np.random.randint(data.shot_num[vid]-self.clip_len)
         shids_left = list(range(begin_shid, begin_shid+pseudo_bound))
         shids_right = list(range(rand_shid, rand_shid+(self.clip_len-pseudo_bound)))
         clips = self.load_clip(vid, shids_left) + self.load_clip(vid, shids_right)

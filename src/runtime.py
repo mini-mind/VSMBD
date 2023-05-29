@@ -36,9 +36,10 @@ if conf.get('test'):
 Model = getattr(import_module(f'src.model.{cfg.base.model}'), 'Model')
 model = Model().to(cfg.base.DEVICE)
 if cfg[stage].get('load_path'):
-    print(stage, cfg[stage].get('load_path'))
-    state_dict = torch.load(conf.load_path, 'cpu')
-    model.load_state_dict(state_dict['parameters'])
+    if cfg[stage].get('load_path') != 'None':
+        print(stage, cfg[stage].get('load_path'))
+        state_dict = torch.load(conf.load_path, 'cpu')
+        model.load_state_dict(state_dict['parameters'])
 
 # optimizer
 if cfg[stage].get('optim'):

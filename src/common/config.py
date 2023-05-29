@@ -48,6 +48,7 @@ def load_config(stage, cfg=cfg):
         with open(cfg.base.path.split_path) as f:
             split_set = json.load(f)
         bad_vids = ['tt0095016', 'tt0117951', 'tt0120755'] + ['tt0258000', 'tt0120263'] + ['tt3465916']
+        # bad_vids += ['tt3465916', 'tt0079944', 'tt0072443', 'tt3808342', 'tt0363589', 'tt0120263', 'tt2076220', 'tt0209463', 'tt1602620', 'tt2258281', 'tt0091406', 'tt0826711', 'tt0088222'] # gap100
         for vid in bad_vids:
             if vid in data.anno:
                 del data.anno[vid]
