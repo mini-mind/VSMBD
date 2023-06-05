@@ -50,13 +50,24 @@ def load_config(stage, cfg=cfg):
         with open(cfg.base.path.split_path) as f:
             split_set = json.load(f)
         bad_vids = ['tt0095016', 'tt0117951', 'tt0120755'] + ['tt0258000', 'tt0120263'] + ['tt3465916']
-        # bad_vids += ['tt3465916', 'tt0079944', 'tt0072443', 'tt3808342', 'tt0363589', 'tt0120263', 'tt2076220', 'tt0209463', 'tt1602620', 'tt2258281', 'tt0091406', 'tt0826711', 'tt0088222'] # gap100
+        # bad_vids += ['tt3465916', 'tt0079944', 'tt0072443', 'tt3808342', 'tt0363589', 'tt0120263', 'tt2076220', 'tt0209463', 'tt1602620', 'tt2258281', 'tt0091406', 'tt0826711', 'tt0088222'] # lambda=100
         for vid in bad_vids:
             if vid in data.anno:
                 del data.anno[vid]
+    elif OC.select(cfg, 'finetune.aim_index') is not None:
+        bad_vids = []
+        aim_index = OC.select(cfg, 'finetune.aim_index')
+        vids = list(data.anno)
+        split_set = {
+            "full":vids,
+            "train":list(set(vids)-{vids[aim_index]}),
+            "val":[],
+            "test":vids[aim_index]
+        }
     else:
         bad_vids = []
         split_set = {"full":list(data.anno),"train":[], "val":[], "test":list(data.anno)}
+
 
     # collecting vids
     data.full_vids = [vid for vid in split_set['full'] if vid not in bad_vids]

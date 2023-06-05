@@ -14,5 +14,5 @@ def warmup_decay_cosine(warmup_steps, loop_steps):
         step = step % loop_steps
         progress = float(step) / float(max(1, loop_steps))
         lr = 0.5 * (1.0 + math.cos(math.pi * progress)) / rate
-        return min(lr, 0.8)
+        return min(lr, 1)
     return fn

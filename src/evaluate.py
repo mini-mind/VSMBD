@@ -49,5 +49,5 @@ else:
         log()
         for k,v in score.items():
             log(k, ':', v)
-        file_name = f'{os.path.basename(cfg.evaluate.load_path).split(".")[0]}.pkl'
+        # file_name = f'{os.path.basename(cfg.evaluate.load_path).split(".")[0]}.pkl'
         # pd.to_pickle(results, os.path.join(cfg.base.save_root, cfg.base.name, file_name))

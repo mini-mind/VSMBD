@@ -41,6 +41,10 @@ if cfg[stage].get('load_path'):
         state_dict = torch.load(conf.load_path, 'cpu')
         model.load_state_dict(state_dict['parameters'])
 
+if cfg.get('finetune', None) is not None and cfg.finetune.get('aim_index', None) is not None:
+    model.encoder.requires_grad_(False)
+    model.encoder.eval()
+
 # optimizer
 if cfg[stage].get('optim'):
 

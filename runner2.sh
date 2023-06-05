@@ -62,6 +62,35 @@
 # done
 
 # ########################################################################
+# # finetune MLP on OVSD/BBC with avg(len(shots)) and evaluate each film
+# ########################################################################
+
+# # finetuned, n=21
+# for idx in `seq 0 20`
+# do
+#     python -m src.finetune config/ovsd_avg.yaml \
+#         base.name=ovsd_avg_finetune${idx} \
+#         finetune.aim_index=${idx} \
+#         finetune.load_path='../checkpoints/selfsup_best/finetune/epoch=10.pt'
+#     find ../checkpoints/ -name 'epoch*' | grep -v 'epoch=10' | xargs rm
+# done
+
+# # finetuned, n=21
+# for idx in `seq 0 10`
+# do
+#     for no in `seq 0 4`
+#     do
+#         python -m src.finetune config/bbc_avg.yaml \
+#             base.name=bbc${no}_avg_finetune${idx} \
+#             finetune.aim_index=${idx} \
+#             finetune.load_path='../checkpoints/selfsup_best/finetune/epoch=10.pt' \
+#             base.path.scene_path='${..data_root}/scene_annotation_'${no}'.pkl' \
+#             base.path.label_path='${..data_root}/label_dict_'${no}'.pkl'
+#         find ../checkpoints/ -name 'epoch*' | grep -v 'epoch=10' | xargs rm
+#     done
+# done
+
+# ########################################################################
 # # filter false negtive pseudo boundaries
 # ########################################################################
 
@@ -70,9 +99,10 @@
 #     evaluate.test.vid_list=other_vids \
 #     evaluate.test.dataset=predict
 
-python -m src.pretrain config/filter_pseudo.yaml
-python -m src.finetune config/filter_pseudo.yaml
-find ../checkpoints/ -name 'epoch*' | grep -v 'epoch=10' | xargs rm
+# python -m src.pretrain config/filter_pseudo.yaml
+# python -m src.finetune config/filter_pseudo.yaml
+# find ../checkpoints/ -name 'epoch*' | grep -v 'epoch=10' | xargs rm
+
 
 ###############################
 

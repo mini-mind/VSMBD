@@ -1,46 +1,31 @@
 base: 
-  name: filter_pseudo_light
+  name: bbc_avg
   DEVICE: cuda:0
   seed: 0
   params: 
     clip_len: 21
     dropout: 0.2
-  data_root: ../data/MovieNet
-  save_root: ../checkpoints/filter
+  data_root: ../data/BBC
+  save_root: ../checkpoints/bbc_avg
   path: 
     feature_path:
       - ${base.data_root}/ImageNet_shot.pkl
       - ${base.data_root}/Places_shot.pkl
-    filter_path: /root/project/checkpoints/selfsup_best/evaluate/selfsup_best.pkl
-    split_path: ${..data_root}/movie1K.split.v1.json
     scene_path: ${..data_root}/scene_annotation.pkl
     shot_path: ${..data_root}/shot_annotation.pkl
     label_path: ${..data_root}/label_dict.pkl
-  model: model_light
-
-pretrain: 
-  params: 
-    num_workers: 12
-    batch_size: 256
-    lr: 1
-    from_epoch: 0
-    total_epochs: 11
-  train: 
-    dataset: filter_pseudo
-    vid_list: other_vids
-  test: 
-    dataset: finetune_base
-    vid_list: test_vids
-  optim: SGD
+  model: model
 
 finetune:
+  aim_index:
   params: 
     num_workers: 12
     batch_size: 256
-    lr: 1e-5
+    lr: 1e-4
     from_epoch: 0
     total_epochs: 11
-  load_path: ${base.save_root}/${base.name}/pretrain/epoch=10.pt
+    label_percentage: 100
+  load_path: ../checkpoints/selfsup_best/pretrain/epoch=10.pt
   train: 
     dataset: finetune_base
     vid_list: train_vids
