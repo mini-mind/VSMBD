@@ -9,7 +9,7 @@ This is an official PyTorch Implementation of **Temporal Scene Montage for Self-
 
 ## Environment
 
-This project runs on Linux (Ubuntu 22.04) with one GPU (>2G) and a large memory (>80G).
+This project runs on Linux (Ubuntu 22.04) with one GPU (~4G) and a large memory (~80G).
 
 Install the following packages at first:
 - python 3.9.2
@@ -58,7 +58,7 @@ Codes for generating the above files can be found in `preprocess.ipynb`.
 
 ## Train & Test
 
-Commands for train&test can be seen in `runner.sh`. Here we show some basic commands.
+Commands for train&test can be seen in `runner.sh`. Some ablations can be seen in `runner2.sh` and `runner3.sh`. Here we show some basic commands.
 
 Pre-training:
 ``` bash
@@ -90,7 +90,8 @@ Configuration files `config/xxx.yaml` contains all the hyperparameters.
     - `base.path` includes file paths of formatted datasets and labels.
     - `model` is the basename of the Model code file.
 - `pretrain`, `finetune` and `evaluate` correspond to two training stages and the testing stage.
-    - `pretrain.params.label_percentage` specifies the percentage of data to use.
+    - `pretrain.params.label_percentage` specifies the percentage of data to use during pre-training.
+    - `finetune.aim_index` specifies the index of films in OVSD/BBC for evaluation using leave-one-out method.
     - `finetune.load_path` specifies the path of the pre-trained model.
     - `finetune.train` is the basename of the Dataset code file.
     - `finetune.vid_list` indicates which subset of MovieNet to use.
