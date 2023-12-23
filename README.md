@@ -5,4 +5,4 @@
 
 This is an official PyTorch Implementation of **Temporal Scene Montage for Self-Supervised Video Scene Boundary Detection**.
 
-Our code will be available until the paper is accepted.
+Our code will be available after the paper is accepted.
