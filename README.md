@@ -96,3 +96,16 @@ Configuration files `config/xxx.yaml` contains all the hyperparameters.
     - `finetune.train` is the basename of the Dataset code file.
     - `finetune.vid_list` indicates which subset of MovieNet to use.
     - `evaluate.head` specifies the prediction header to use.
+
+## Quote
+
+```
+@article{tan2024temporal,
+  title={Temporal Scene Montage for Self-Supervised Video Scene Boundary Detection},
+  author={Tan, Jiawei and Yang, Pingan and Chen, Lu and Wang, Hongxing},
+  journal={ACM Transactions on Multimedia Computing, Communications and Applications},
+  year={2024},
+  publisher={ACM New York, NY}
+}
+```
+
